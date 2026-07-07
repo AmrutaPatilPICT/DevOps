@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Student Task Manager</title>
+
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background-color: #f4f6f8;
+
+            margin: 0;
+
+        }
+
+        .container {
+
+            max-width: 700px;
+
+            margin: 50px auto;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 10px;
+
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+
+        }
+
+        .row {
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+        input {
+
+            flex: 1;
+
+            padding: 12px;
+
+        }
+
+        button {
+
+            padding: 10px 14px;
+
+            cursor: pointer;
+
+        }
+
+        li {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #ddd;
+
+        }
+
+        .done {
+
+            text-decoration: line-through;
+
+            opacity: 0.6;
+
+        }
+
+        .actions {
+
+            display: flex;
+
+            gap: 8px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Student Task Manager</h1>
+
+    <p>
+        Sample Web Application for DevOps Laboratory
+    </p>
+
+    <div class="row">
+
+        <input
+            id="taskTitle"
+            placeholder="Enter a task"
+        >
+
+        <button onclick="addTask()">
+            Add Task
+        </button>
+
+    </div>
+
+    <ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+async function loadTasks() {
+
+    const response =
+        await fetch('/api/tasks');
+
+    const tasks =
+        await response.json();
+
+    const list =
+        document.getElementById('taskList');
+
+    list.innerHTML = '';
+
+    tasks.forEach(task => {
+
+        const li =
+            document.createElement('li');
+
+        li.innerHTML = `
+
+            <span class="${task.completed ? 'done' : ''}">
+
+                ${task.title}
+
+            </span>
+
+            <span class="actions">
+
+                <button onclick="toggleTask(${task.id})">
+
+                    Toggle
+
+                </button>
+
+                <button onclick="deleteTask(${task.id})">
+
+                    Delete
+
+                </button>
+
+            </span>
+
+        `;
+
+        list.appendChild(li);
+
+    });
+
+}
+
+async function addTask() {
+
+    const input =
+        document.getElementById('taskTitle');
+
+    if (!input.value.trim())
+        return;
+
+    await fetch('/api/tasks', {
+
+        method: 'POST',
+
+        headers: {
+
+            'Content-Type': 'application/json'
+
+        },
+
+        body: JSON.stringify({
+
+            title: input.value
+
+        })
+
+    });
+
+    input.value = '';
+
+    loadTasks();
+
+}
+
+async function toggleTask(id) {
+
+    await fetch(
+        `/api/tasks/${id}`,
+        {
+            method: 'PATCH'
+        }
+    );
+
+    loadTasks();
+
+}
+
+async function deleteTask(id) {
+
+    await fetch(
+        `/api/tasks/${id}`,
+        {
+            method: 'DELETE'
+        }
+    );
+
+    loadTasks();
+
+}
+
+loadTasks();
+
+</script>
+
+</body>
+
+</html>
