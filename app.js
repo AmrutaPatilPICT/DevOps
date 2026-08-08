@@ -5,7 +5,7 @@ app.use(express.json());
 app.use(express.static('public'));
 let tasks = [{
     id: 1,
-        title: 'Learn Git Basics',
+        title: 'Learn Git/GitHub Basics',
         completed: true
 },
 {
