@@ -12,6 +12,11 @@ let tasks = [{
     id: 2,
         title: 'Configure Jenkins Build',
         completed: false
+},
+{
+    id: 3,
+        title: 'Build Configurations for CICD',
+        completed: false
 }];
 app.get('/api/tasks', (req,res) => {res.json(tasks)});
 
